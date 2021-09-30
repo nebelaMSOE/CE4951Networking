@@ -1,0 +1,6 @@
+timer.c:51:6:timer_init	4	static
+timer.c:76:6:timer_playSound	24	static
+timer.c:104:6:timer_setSound	24	static
+timer.c:117:6:timer_play	4	static
+timer.c:124:6:timer_stop	4	static
+timer.c:128:17:frequencytoTicks	16	static
