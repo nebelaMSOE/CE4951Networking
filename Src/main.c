@@ -9,10 +9,29 @@
   Call of tuner sequence in main function.
 */
 
-#include "tuner.h"
+enum State {IDLE, BUSY, COLLISION};
+
+enum State currentState = IDLE;
 
 int main(void)
 {
-	tuner_sequence();
+	switch (currentState)
+	{
+	case IDLE:
+
+	break;
+
+	case BUSY:
+
+	break;
+
+	case COLLISION:
+
+	break;
+
+	default:
+
+	break;
+	}
 	for(;;);
 }
