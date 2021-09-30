@@ -28,18 +28,32 @@ int main(void)
 		switch (currentState)
 		{
 		case IDLE:
+			//Left LEDs on
+
+			// Interrupt when E1
 
 			break;
 
 		case BUSY:
+			//Middle LEDs on
+
+			//Interrupt when E2
+
+			//Interrupt when E3
 
 			break;
 
 		case COLLISION:
+			//Right LEDs on
+
+			//Interrupt when E1
 
 			break;
 
 		default:
+			//Enexpected value for currentState
+			//Resetting currentState to initial value
+			currentState = IDLE;
 
 			break;
 		}
