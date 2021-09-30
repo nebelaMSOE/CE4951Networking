@@ -12,26 +12,36 @@
 enum State {IDLE, BUSY, COLLISION};
 
 enum State currentState = IDLE;
+/*
+ * E1: Any signal bus voltage edge
+ * E2: Timer timeout when bus is logic-0
+ * E3: Timer timeout when bus is logic-1
+ * IDLE -> BUSY (E1)
+ * BUSY -> COLLISION (E2)
+ * BUSY -> IDLE (E3)
+ * COLLISION -> BUSY (E1)
+ */
 
 int main(void)
 {
-	switch (currentState)
-	{
-	case IDLE:
+	while(){
+		switch (currentState)
+		{
+		case IDLE:
 
-	break;
+			break;
 
-	case BUSY:
+		case BUSY:
 
-	break;
+			break;
 
-	case COLLISION:
+		case COLLISION:
 
-	break;
+			break;
 
-	default:
+		default:
 
-	break;
+			break;
+		}
 	}
-	for(;;);
 }
