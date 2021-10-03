@@ -9,6 +9,14 @@
   Call of tuner sequence in main function.
 */
 
+#include "led.h"
+#include "delay.h"
+#include "uart_driver.h"
+#include <inttypes.h>
+#include <stdio.h>
+
+#define F_CPU 16000000UL
+
 enum State {IDLE, BUSY, COLLISION};
 
 enum State currentState = IDLE;
@@ -24,19 +32,29 @@ enum State currentState = IDLE;
 
 int main(void)
 {
-	while(){
+	//Set up uart connection
+	init_usart2(57600, F_CPU);
+	//Test to to ensure connection
+	printf("CE4951 Networking Project");
+	//Initialize leds
+	led_init();
+	while(1){
 		switch (currentState)
 		{
 		case IDLE:
-			//Left LEDs on
-
+			//Left two LEDs on
+			led_allOff();
+			led_on(9);
+			led_on(8);
 			// Interrupt when E1
 
 			break;
 
 		case BUSY:
-			//Middle LEDs on
-
+			//Middle two LEDs on
+			led_allOff();
+			led_on(5);
+			led_on(4);
 			//Interrupt when E2
 
 			//Interrupt when E3
@@ -44,14 +62,17 @@ int main(void)
 			break;
 
 		case COLLISION:
-			//Right LEDs on
-
+			//Right two LEDs on
+			led_allOff();
+			led_on(1);
+			led_on(0);
 			//Interrupt when E1
 
 			break;
 
 		default:
-			//Enexpected value for currentState
+			led_allOff();
+			//Unexpected value for currentState
 			//Resetting currentState to initial value
 			currentState = IDLE;
 
