@@ -1,7 +1,0 @@
-tuner.c:53:6:tuner_sequence	24	static
-tuner.c:180:6:tuner_stepUp	8	static
-tuner.c:187:6:tuner_stepDown	8	static
-tuner.c:194:13:startup	8	static
-tuner.c:234:13:setNote	16	static
-tuner.c:242:17:getFreq	24	static
-tuner.c:352:14:getNoteName	24	static

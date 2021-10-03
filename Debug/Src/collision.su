@@ -1,0 +1,7 @@
+collision.c:49:6:counter_init	4	static
+collision.c:94:6:detect_init	4	static
+collision.c:123:6:counter_start	4	static
+collision.c:131:6:counter_stop	4	static
+collision.c:138:10:counter_getCount	4	static
+collision.c:148:6:TIM2_IRQHandler	4	static
+collision.c:157:6:EXTI15_10_IRQHandler	4	static

@@ -1,3 +1,8 @@
-Src/main.o: ../Src/main.c ../Inc/tuner.h
+Src/main.o: ../Src/main.c ../Inc/led.h ../Inc/delay.h \
+ ../Inc/uart_driver.h
 
-../Inc/tuner.h:
+../Inc/led.h:
+
+../Inc/delay.h:
+
+../Inc/uart_driver.h:
