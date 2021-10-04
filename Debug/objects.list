@@ -1,7 +1,5 @@
 "./Src/collision.o"
 "./Src/delay.o"
-"./Src/keypad.o"
-"./Src/lcd.o"
 "./Src/led.o"
 "./Src/main.o"
 "./Src/syscalls.o"

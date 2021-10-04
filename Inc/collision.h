@@ -63,4 +63,10 @@ void counter_stop();
  */
 uint32_t counter_getCount();
 
+//resets counter value
+void counter_resetValue();
+
+//reset counter flag
+void counter_resetFlag();
+
 #endif /* COLLISION_H_ */

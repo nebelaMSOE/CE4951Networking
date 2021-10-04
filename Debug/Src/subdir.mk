@@ -7,8 +7,6 @@
 C_SRCS += \
 ../Src/collision.c \
 ../Src/delay.c \
-../Src/keypad.c \
-../Src/lcd.c \
 ../Src/led.c \
 ../Src/main.c \
 ../Src/syscalls.c \
@@ -18,8 +16,6 @@ C_SRCS += \
 OBJS += \
 ./Src/collision.o \
 ./Src/delay.o \
-./Src/keypad.o \
-./Src/lcd.o \
 ./Src/led.o \
 ./Src/main.o \
 ./Src/syscalls.o \
@@ -29,8 +25,6 @@ OBJS += \
 C_DEPS += \
 ./Src/collision.d \
 ./Src/delay.d \
-./Src/keypad.d \
-./Src/lcd.d \
 ./Src/led.d \
 ./Src/main.d \
 ./Src/syscalls.d \

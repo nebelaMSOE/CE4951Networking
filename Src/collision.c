@@ -1,3 +1,5 @@
+
+
 /*
  * counter.c
  *
@@ -10,6 +12,9 @@
 
 #include "collision.h"
 #include <inttypes.h>
+
+//16 bit register where value of timer is held
+#define TIM2_CNT (volatile uint32_t*) 0x40000024
 
 /*
  * Structure for memory mapped timer registers
@@ -47,27 +52,6 @@ static uint32_t timeTaken = 0;
  * keep track of time
  */
 void counter_init(){
-	/*
-	 *
-	 * test code to input capture on TIM2
-	*NVIC_ISER0 |= (1<<28);
-
-	*RCC_APB1ENR |= 1;
-
-	*RCC_AHB1ENR |= 1;
-
-	*GPIOA_MODER |= (0b10 << 30);
-
-	*GPIOA_AFRH |= (0b0010 << 28);
-
-	tim->CCMR1 |= (0b01);
-
-	tim->CCMR1 |= (0b0011<<4);
-
-	tim->CCER |= 0b1011;
-
-	tim->DIER = 2;
-	*/
 
 	//Unmask interrupt
 	*NVIC_ISER0 |= (1<<28);
@@ -139,21 +123,12 @@ uint32_t counter_getCount(){
 	return timeTaken;
 }
 
-/*
- * Interrupt handler to handle interrupts
- * from the counter
- *
- * Setup to check receive line and update state machine accordingly
- */
-void TIM2_IRQHandler(void){
-	tim->SR = ~(1<<1); //Clear flag
+//resets value of counter
+void counter_resetValue(){
+	*TIM2_CNT = 0;
 }
 
-/*
- * Interrupt handler triggered on edge of PA15
- *
- * Should start a counter and move state to BUSY
- */
-void EXTI15_10_IRQHandler(void){
-	*EXTI_PR |= (1<<15); //Clear flag
+//resets interrupt flag
+void counter_resetFlag(){
+	tim->SR = ~(1<<1);
 }

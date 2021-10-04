@@ -60,8 +60,8 @@ all: main-build
 main-build: FinalProjectNavin.elf secondary-outputs
 
 # Tool invocations
-FinalProjectNavin.elf: $(OBJS) $(USER_OBJS) C:\Users\navinj\Desktop\STM\ Projects\NetworkingProject\STM32F446RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "FinalProjectNavin.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\navinj\Desktop\STM Projects\NetworkingProject\STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="FinalProjectNavin.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+FinalProjectNavin.elf: $(OBJS) $(USER_OBJS) C:\Users\nebela\Documents\GitHub\CE4951Networking\STM32F446RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "FinalProjectNavin.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\nebela\Documents\GitHub\CE4951Networking\STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="FinalProjectNavin.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

@@ -12,6 +12,7 @@
 #include "led.h"
 #include "delay.h"
 #include "uart_driver.h"
+#include "collision.h"
 #include <inttypes.h>
 #include <stdio.h>
 
@@ -20,6 +21,36 @@
 enum State {IDLE, BUSY, COLLISION};
 
 enum State currentState = IDLE;
+
+//value to keep track of voltage on A15
+
+static uint32_t valueIn = 1;
+
+/*
+ * Makes a timer structure with the base address of TIM2
+ */
+
+//interupt handlers
+
+/*
+ * EXTI15_10_IRQHandler()
+ * Handles the interrupts for a signal edge
+ * on pin A15
+ * Args: na
+ * Return: na
+ */
+void EXTI15_10_IRQHandler(void) __attribute__ ((isr));
+
+/*
+ * TIM2_IRQHandler()
+ * Interrupt handler to handle interrupts
+ * from the counter
+ * Args: na
+ * Return: na
+ */
+void TIM2_IRQHandler(void) __attribute__ ((isr));
+
+
 /*
  * E1: Any signal bus voltage edge
  * E2: Timer timeout when bus is logic-0
@@ -33,11 +64,16 @@ enum State currentState = IDLE;
 int main(void)
 {
 	//Set up uart connection
-	init_usart2(57600, F_CPU);
+	//init_usart2(57600, F_CPU);
 	//Test to to ensure connection
-	printf("CE4951 Networking Project");
+	//printf("CE4951 Networking Project");
+
 	//Initialize leds
 	led_init();
+	//Initialize counter with timeout of 1.1ms
+	counter_init();
+	//Initialize pin PA15 and interrupts on any edge
+	detect_init();
 	while(1){
 		switch (currentState)
 		{
@@ -78,5 +114,84 @@ int main(void)
 
 			break;
 		}
+	}
+}
+
+/*
+ * TIM2_IRQHandler()
+ * Interrupt handler to handle interrupts
+ * from the counter
+ * Args: na
+ * Return: na
+ */
+void TIM2_IRQHandler(void){
+	//Clear flag
+	counter_resetFlag();
+	//get value on pin A15
+	uint32_t valueIn = *GPIOA_IDR & 0x8000;
+	//shift value to be 1 or 0
+	valueIn = (valueIn >> 15);
+	if(currentState == BUSY){
+		//if busy and E2 move to collision
+		if(valueIn == 0){
+			currentState = COLLISION;
+			//stop counter
+			counter_stop();
+			//reset counter value to 0
+			counter_resetValue();
+			//if busy and E3 move to idle
+		} else if (valueIn == 1){
+			currentState = IDLE;
+			//stop counter
+			counter_stop();
+			//reset counter value
+			counter_resetValue();
+		}
+	}
+
+}
+
+/*
+ * EXTI15_10_IRQHandler()
+ * Handles the interrupts for a signal edge
+ * on pin A15
+ * Args: na
+ * Return: na
+ */
+void EXTI15_10_IRQHandler(void){
+	//verify interrupt on pin 15
+	if((*EXTI_PR) & (1<<15)){
+		//clear interrupt
+		*EXTI_PR |= 1<<15;
+		switch (currentState)
+				{
+				case IDLE:
+					//if idle and E1 move to busy
+					currentState = BUSY;
+					//reset counter value to 0
+					counter_resetValue();
+					//start counter
+					counter_start();
+					break;
+
+				case COLLISION:
+					//if collision and E1 move to busy
+					currentState = BUSY;
+					//reset counter value to 0
+					counter_resetValue();
+					//start counter
+					counter_start();
+					break;
+
+				default:
+					led_allOff();
+					//Unexpected value for currentState
+					//Resetting currentState to initial value
+					currentState = IDLE;
+					//stop counter
+					counter_stop();
+
+					break;
+				}
 	}
 }
