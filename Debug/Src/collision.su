@@ -1,7 +1,0 @@
-collision.c:51:6:counter_init	4	static
-collision.c:75:6:detect_init	4	static
-collision.c:104:6:counter_start	4	static
-collision.c:112:6:counter_stop	4	static
-collision.c:119:10:counter_getCount	4	static
-collision.c:124:6:counter_resetValue	4	static
-collision.c:129:6:counter_resetFlag	4	static

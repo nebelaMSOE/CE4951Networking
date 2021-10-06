@@ -1,5 +1,0 @@
-keypad.c:11:6:keypad_init	4	static
-keypad.c:20:9:keypad_getKeyNoBlock	16	static
-keypad.c:80:9:keypad_getKey	16	static
-keypad.c:101:9:keypad_getNum	24	static
-keypad.c:118:6:keypad_getChar	24	static
