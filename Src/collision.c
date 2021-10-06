@@ -13,9 +13,6 @@
 #include "collision.h"
 #include <inttypes.h>
 
-//16 bit register where value of timer is held
-#define TIM2_CNT (volatile uint32_t*) 0x40000024
-
 /*
  * Structure for memory mapped timer registers
  */
@@ -63,11 +60,11 @@ void counter_init(){
 	tim->CCR1 = 17600;
 
 	//Enable interrupt
-	tim->DIER = 2;
+	tim->DIER = 1;
 
-	tim->CCMR1 = (0b011<<4);
+	// tim->CCMR1 = (0b011<<4);
 
-	tim->CCER = 1;
+	// tim->CCER = 1;
 }
 
 /*
@@ -113,7 +110,7 @@ void counter_start(){
  * Stops the counter
  */
 void counter_stop(){
-	tim->CR1 = 0;
+	tim->CR1 &= ~1;
 }
 
 /*
@@ -125,10 +122,10 @@ uint32_t counter_getCount(){
 
 //resets value of counter
 void counter_resetValue(){
-	*TIM2_CNT = 0;
+	tim->CNT = 0;
 }
 
 //resets interrupt flag
 void counter_resetFlag(){
-	tim->SR = ~(1<<1);
+	tim->SR &= ~1;
 }

@@ -125,27 +125,19 @@ int main(void)
  * Return: na
  */
 void TIM2_IRQHandler(void){
-	//Clear flag
+	counter_stop();
+	counter_resetValue();
 	counter_resetFlag();
 	//get value on pin A15
-	uint32_t valueIn = *GPIOA_IDR & 0x8000;
-	//shift value to be 1 or 0
-	valueIn = (valueIn >> 15);
+	valueIn = (*GPIOA_IDR & 0x8000) >> 15;
+
 	if(currentState == BUSY){
 		//if busy and E2 move to collision
 		if(valueIn == 0){
 			currentState = COLLISION;
-			//stop counter
-			counter_stop();
-			//reset counter value to 0
-			counter_resetValue();
 			//if busy and E3 move to idle
 		} else if (valueIn == 1){
 			currentState = IDLE;
-			//stop counter
-			counter_stop();
-			//reset counter value
-			counter_resetValue();
 		}
 	}
 
@@ -183,7 +175,15 @@ void EXTI15_10_IRQHandler(void){
 					counter_start();
 					break;
 
+				case BUSY:
+					counter_stop();
+					counter_resetValue();
+					counter_resetFlag();
+					counter_start();
+					break;
+
 				default:
+					// this should never happen
 					led_allOff();
 					//Unexpected value for currentState
 					//Resetting currentState to initial value
