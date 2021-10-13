@@ -13,6 +13,7 @@
 #include "delay.h"
 #include "uart_driver.h"
 #include "collision.h"
+#include "transmit.h"
 #include <inttypes.h>
 #include <stdio.h>
 
@@ -64,7 +65,7 @@ void TIM2_IRQHandler(void) __attribute__ ((isr));
 int main(void)
 {
 	//Set up uart connection
-	//init_usart2(57600, F_CPU);
+//	init_usart2(57600, F_CPU);
 	//Test to to ensure connection
 	//printf("CE4951 Networking Project");
 
@@ -74,6 +75,13 @@ int main(void)
 	counter_init();
 	//Initialize pin PA15 and interrupts on any edge
 	detect_init();
+	// Initialize the transmitter
+	init_transmitter();
+
+	// TODO: read string from stdin
+	char test[2] = "Hi";
+	transmit_string(&test[0], 2);
+
 	while(1){
 		switch (currentState)
 		{
