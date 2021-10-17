@@ -27,6 +27,16 @@ enum State currentState = IDLE;
 
 static uint32_t valueIn = 1;
 
+//Transmission Variables
+static char* data_ptr = (char*) 0; // the data being sent
+static uint32_t transmit_len = 0; // the number of bytes
+static uint32_t transmit_pos = 0; // byte offset
+static uint32_t transmit_bit = 0; // bit offset
+
+static uint32_t half_bit = 0; // which half-bit is being sent (0 for first, 1 for second)
+
+static uint32_t sent = 0; // number of half-bits sent
+
 /*
  * Makes a timer structure with the base address of TIM2
  */
@@ -50,6 +60,15 @@ void EXTI15_10_IRQHandler(void) __attribute__ ((isr));
  * Return: na
  */
 void TIM2_IRQHandler(void) __attribute__ ((isr));
+
+/*
+ * TIM3_IRQHandler()
+ * Interrupt handler to handle interrupts
+ * from transmitter timer
+ * Args: na
+ * Return: na
+ */
+void TIM3_IRQHandler(void) __attribute__ ((isr));
 
 
 /*
@@ -80,7 +99,13 @@ int main(void)
 
 	// TODO: read string from stdin
 	char test[2] = "Hi";
-	transmit_string(&test[0], 2);
+	data_ptr = &test[0];
+	transmit_len = 2;
+	transmit_pos = 0;
+	half_bit = 0;
+
+	transmitter_start();
+	//transmit_string(&test[0], 2);
 
 	while(1){
 		switch (currentState)
@@ -201,5 +226,57 @@ void EXTI15_10_IRQHandler(void){
 
 					break;
 				}
+	}
+}
+
+void TIM3_IRQHandler(void)
+{
+	// clear flag
+	transmitter_resetFlag();
+
+	// we are done transmitting; turn stop timer
+	if (transmit_pos == transmit_len && half_bit == 0) {
+		transmitter_stop();
+		return;
+	}
+
+	char byte = data_ptr[transmit_pos];
+	char bit = (byte & (0x80 >> transmit_bit));
+
+	if(currentState == IDLE){
+
+		if (half_bit == 0) {
+			// send first half_bit
+
+			if (bit == 0) {
+				//Set output pin to high
+				transmitter_setOutHigh();
+			} else {
+				//Set output pin to low
+				transmitter_setOutLow();
+			}
+
+			half_bit = 1;
+		} else {
+			// send second half_bit
+
+			if (bit == 0) {
+				//Set output pin to low
+				transmitter_setOutLow();
+			} else {
+				//Set output pin to high
+				transmitter_setOutHigh();
+			}
+
+			if (transmit_bit != 7) {
+				transmit_bit += 1;
+			} else {
+				transmit_bit = 0;
+				transmit_pos += 1;
+			}
+			half_bit = 0;
+		}
+
+		sent += 1;
 	}
 }
