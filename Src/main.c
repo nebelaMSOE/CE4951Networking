@@ -19,6 +19,9 @@
 
 #define F_CPU 16000000UL
 
+//max size of transmit array
+#define ARSIZE 255
+
 enum State {IDLE, BUSY, COLLISION};
 
 enum State currentState = IDLE;
@@ -36,6 +39,8 @@ static uint32_t transmit_bit = 0; // bit offset
 static uint32_t half_bit = 0; // which half-bit is being sent (0 for first, 1 for second)
 
 static uint32_t sent = 0; // number of half-bits sent
+
+static uint32_t nextChar = 0; // position to put next char
 
 /*
  * Makes a timer structure with the base address of TIM2
@@ -83,10 +88,9 @@ void TIM3_IRQHandler(void) __attribute__ ((isr));
 
 int main(void)
 {
-	//Set up uart connection
-//	init_usart2(57600, F_CPU);
-	//Test to to ensure connection
-	//printf("CE4951 Networking Project");
+	//Set up uart connection for 2000 baud
+	init_usart2(2000, F_CPU);
+	printf("CE4951 Networking Project");
 
 	//Initialize leds
 	led_init();
@@ -98,16 +102,36 @@ int main(void)
 	init_transmitter();
 
 	// TODO: read string from stdin
-	char test[2] = "Hi";
-	data_ptr = &test[0];
-	transmit_len = 2;
+
+	//char test[2] = "Hi";
+	//data_ptr = &test[0];
+	//transmit_len = 2;
 	transmit_pos = 0;
 	half_bit = 0;
 
-	transmitter_start();
+	//transmitter_start();
 	//transmit_string(&test[0], 2);
 
+	char transmitArray[ARSIZE];
+
 	while(1){
+
+		//look if there is anything new in uart
+		if((*(USART_SR)&(1<<RXNE)) == (1<<RXNE)){
+
+			nextChar = 0;
+
+			//while there's still new things to be read
+			while ((*(USART_SR)&(1<<RXNE)) == (1<<RXNE)){
+				transmitArray[nextChar] = usart2_getch();
+				nextChar++;
+			}
+			//set size of array
+			transmit_len = nextChar;
+			transmit_pos = 0;
+			transmit_string(&transmitArray[transmit_pos], transmit_len);
+		}
+
 		switch (currentState)
 		{
 		case IDLE:
