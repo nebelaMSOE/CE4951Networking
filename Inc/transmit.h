@@ -15,6 +15,7 @@
 #define GPIOC_IDR (volatile uint32_t*) 0x40020810
 #define GPIOC_ODR (volatile uint32_t*) 0x40020814
 #define GPIOC_BSRR (volatile uint32_t*) 0x40020818
+#define GPIOC_OTYPER (volatile uint32_t*) 0x40020804
 
 /*
  * Initialize the timer & interrupt for transmitting data

@@ -113,6 +113,7 @@ int main(void)
 	//transmit_string(&test[0], 2);
 
 	char transmitArray[ARSIZE];
+	data_ptr = transmitArray;
 
 	while(1){
 
