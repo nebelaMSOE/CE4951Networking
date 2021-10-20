@@ -116,21 +116,19 @@ int main(void)
 	data_ptr = transmitArray;
 
 	while(1){
-
 		//look if there is anything new in uart
 		if((*(USART_SR)&(1<<RXNE)) == (1<<RXNE)){
 
-			nextChar = 0;
+			transmitArray[nextChar] = usart2_getch();
 
-			//while there's still new things to be read
-			while ((*(USART_SR)&(1<<RXNE)) == (1<<RXNE)){
-				transmitArray[nextChar] = usart2_getch();
-				nextChar++;
+			//if return character
+			if (transmitArray[nextChar] == 0xa){
+				transmit_len = nextChar;
+				transmit_pos = 0;
+				nextChar = 0;
+				transmit_string(&transmitArray[transmit_pos], transmit_len);
 			}
-			//set size of array
-			transmit_len = nextChar;
-			transmit_pos = 0;
-			transmit_string(&transmitArray[transmit_pos], transmit_len);
+			nextChar++;
 		}
 
 		switch (currentState)
