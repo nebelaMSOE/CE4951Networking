@@ -120,15 +120,15 @@ int main(void)
 		if((*(USART_SR)&(1<<RXNE)) == (1<<RXNE)){
 
 			transmitArray[nextChar] = usart2_getch();
+			nextChar++;
 
 			//if return character
-			if (transmitArray[nextChar] == 0xa){
-				transmit_len = nextChar;
+			if (transmitArray[nextChar-1] == 0xa){
+				transmit_len = nextChar-1;
 				transmit_pos = 0;
 				nextChar = 0;
 				transmit_string(&transmitArray[transmit_pos], transmit_len);
 			}
-			nextChar++;
 		}
 
 		switch (currentState)
