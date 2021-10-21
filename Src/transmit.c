@@ -45,6 +45,8 @@ void init_transmitter(void)
 	tim->CCR1 = 8000; // .5 ms
 	tim->DIER = 1;
 
+	transmitter_setOutHigh();
+
 	// TODO: initialize a pin to transmit on
 }
 
