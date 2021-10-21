@@ -259,6 +259,7 @@ void TIM3_IRQHandler(void)
 
 	// we are done transmitting; turn stop timer
 	if (transmit_pos == transmit_len && half_bit == 0) {
+		transmitter_setOutHigh();
 		transmitter_stop();
 		return;
 	}
