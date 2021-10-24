@@ -14,6 +14,7 @@
 #include "uart_driver.h"
 #include "collision.h"
 #include "transmit.h"
+#include "receiver.h"
 #include <inttypes.h>
 #include <stdio.h>
 
@@ -29,6 +30,10 @@ enum State currentState = IDLE;
 //value to keep track of voltage on A15
 
 static uint32_t valueIn = 1;
+
+//Receiver Variables
+static uint32_t receive_pos = 0;
+static uint32_t inputBuffer[8];
 
 //Transmission Variables
 static char* data_ptr = (char*) 0; // the data being sent
@@ -75,6 +80,15 @@ void TIM2_IRQHandler(void) __attribute__ ((isr));
  */
 void TIM3_IRQHandler(void) __attribute__ ((isr));
 
+/*
+ * TIM4_IRQHandler()
+ * Interrupt handler to handle interrupts
+ * from receiver timer
+ * Args: na
+ * Return: na
+ */
+void TIM4_IRQHandler(void) __attribute__ ((isr));
+
 
 /*
  * E1: Any signal bus voltage edge
@@ -100,8 +114,8 @@ int main(void)
 	detect_init();
 	// Initialize the transmitter
 	init_transmitter();
-
-	// TODO: read string from stdin
+	//Initialize the receiver
+	receiver_init();
 
 	//char test[2] = "Hi";
 	//data_ptr = &test[0];
@@ -303,4 +317,14 @@ void TIM3_IRQHandler(void)
 
 		sent += 1;
 	}
+}
+
+void TIM4_IRQHandler(void){
+	receiver_stop();
+	receiver_resetValue();
+	receiver_resetFlag();
+
+	valueIn = (*GPIOA_IDR & 0x8000) >> 15;
+
+	inputBuffer[receive_pos] = valueIn;
 }

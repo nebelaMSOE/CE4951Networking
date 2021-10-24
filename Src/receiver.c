@@ -1,0 +1,62 @@
+/*
+ * receiver.c
+ *
+ *  Created on: Oct 24, 2021
+ *      Author: navinj
+ */
+
+#include "receiver.h"
+#include <inttypes.h>
+
+typedef struct
+{
+	uint32_t CR1;
+	uint32_t CR2;
+	uint32_t SMCR;
+	uint32_t DIER;
+	uint32_t SR;
+	uint32_t EGR;
+	uint32_t CCMR1;
+	uint32_t CCMR2;
+	uint32_t CCER;
+	uint32_t CNT;
+	uint32_t PSC;
+	uint32_t ARR;
+	uint32_t CCR1;
+} TIM;
+
+// this is TIM4
+static volatile TIM* tim = (TIM*) 0x40000800;
+
+void receiver_init(){
+	*RCC_APB1ENR |= 1 << 2;
+	*NVIC_ISER0 |= 1 << 30;
+
+	tim->ARR = 16000; // 1 ms
+	tim->CCR1 = 16000; // 1 ms
+	tim->DIER = 1;
+}
+
+/*
+ * Starts the receiver counter
+ */
+void receiver_start(){
+	tim->CR1 = 1;
+}
+
+/*
+ * Stops the receiver counter
+ */
+void receiver_stop(){
+	tim->CR1 &= ~1;
+}
+
+//resets receiver counter value
+void receiver_resetValue(){
+	tim->CNT = 0;
+}
+
+//reset receiver flag
+void receiver_resetFlag(){
+	tim->SR &= ~1;
+}
