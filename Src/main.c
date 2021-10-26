@@ -33,7 +33,9 @@ static uint32_t valueIn = 1;
 
 //Receiver Variables
 static uint32_t receive_pos = 0;
-static uint32_t inputBuffer[8];
+static uint8_t inputBuffer[16];
+static uint8_t receive_done = 0;
+static char sendToConsole;
 
 //Transmission Variables
 static char* data_ptr = (char*) 0; // the data being sent
@@ -145,6 +147,12 @@ int main(void)
 			}
 		}
 
+		if(receive_done == 1){
+			receive_done = 0;
+			sendToConsole = (char)receiver_decodeMan(inputBuffer);
+			usart2_putch(sendToConsole);
+		}
+
 		switch (currentState)
 		{
 		case IDLE:
@@ -225,6 +233,15 @@ void EXTI15_10_IRQHandler(void){
 	if((*EXTI_PR) & (1<<15)){
 		//clear interrupt
 		*EXTI_PR |= 1<<15;
+
+		//Handle receipt of first edge of received signal
+		if(receive_pos == 0){
+			valueIn = (*GPIOA_IDR & 0x8000) >> 15;
+			inputBuffer[receive_pos++] = ~valueIn;
+			inputBuffer[receive_pos++] = valueIn;
+			receiver_start();
+		}
+
 		switch (currentState)
 				{
 				case IDLE:
@@ -326,5 +343,12 @@ void TIM4_IRQHandler(void){
 
 	valueIn = (*GPIOA_IDR & 0x8000) >> 15;
 
-	inputBuffer[receive_pos] = valueIn;
+	inputBuffer[receive_pos++] = valueIn;
+
+	if(receive_pos == 16){
+		receive_pos = 0;
+		receive_done = 1;
+	}else{
+		receiver_start();
+	}
 }

@@ -60,3 +60,21 @@ void receiver_resetValue(){
 void receiver_resetFlag(){
 	tim->SR &= ~1;
 }
+
+uint8_t receiver_decodeMan(uint8_t inputBuffer[]){
+	uint8_t output[8];
+	uint8_t firstBit = 0;
+	uint8_t secondBit = 0;
+
+	for(int i = 0; i<16; i+=2){
+		firstBit = inputBuffer[i];
+		secondBit = inputBuffer[i+1];
+
+		if(firstBit == 0 && secondBit == 1){
+			output[i/2] = 1;
+		}else{
+			output[i/2] = 0;
+		}
+	}
+	return output[0]<<7|output[1]<<6|output[2]<<5|output[3]<<4|output[4]<<3|output[5]<<2|output[6]<<1|output[7];
+}
