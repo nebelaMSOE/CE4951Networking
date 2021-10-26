@@ -32,8 +32,8 @@ void receiver_init(){
 	*RCC_APB1ENR |= 1 << 2;
 	*NVIC_ISER0 |= 1 << 30;
 
-	tim->ARR = 16000; // 1 ms
-	tim->CCR1 = 16000; // 1 ms
+	tim->ARR = 8000; // 1 ms
+	tim->CCR1 = 8000; // 1 ms
 	tim->DIER = 1;
 }
 
