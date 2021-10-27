@@ -234,12 +234,21 @@ void EXTI15_10_IRQHandler(void){
 		//clear interrupt
 		*EXTI_PR |= 1<<15;
 
+		receiver_stop();
+		receiver_resetValue();
+		receiver_resetFlag();
+
 		//Handle receipt of first edge of received signal
 		if(receive_pos == 0){
 			valueIn = (*GPIOA_IDR & 0x8000) >> 15;
+			inputBuffer[receive_pos++] = ~valueIn;
 			inputBuffer[receive_pos++] = valueIn;
-			receiver_start();
+		}else{
+			valueIn = (*GPIOA_IDR & 0x8000) >> 15;
+			inputBuffer[receive_pos++] = valueIn;
 		}
+
+		receiver_start();
 
 		switch (currentState)
 				{
@@ -297,7 +306,7 @@ void TIM3_IRQHandler(void)
 	char byte = data_ptr[transmit_pos];
 	char bit = (byte & (0x80 >> transmit_bit));
 
-	if(currentState == IDLE){
+	if(currentState != COLLISION){
 
 		if (half_bit == 0) {
 			// send first half_bit
