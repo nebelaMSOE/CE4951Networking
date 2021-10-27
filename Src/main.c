@@ -33,7 +33,7 @@ static uint32_t valueIn = 1;
 
 //Receiver Variables
 static uint32_t receive_pos = 0;
-static uint8_t inputBuffer[16];
+static uint8_t inputBuffer[17];
 static uint8_t receive_done = 0;
 static char sendToConsole;
 
@@ -150,7 +150,7 @@ int main(void)
 		if(receive_done == 1){
 			receive_done = 0;
 			sendToConsole = (char)receiver_decodeMan(inputBuffer);
-			usart2_putch(sendToConsole);
+			printf("%c", sendToConsole);
 		}
 
 		switch (currentState)
@@ -248,7 +248,12 @@ void EXTI15_10_IRQHandler(void){
 			inputBuffer[receive_pos++] = valueIn;
 		}
 
-		receiver_start();
+		if(receive_pos == 17){
+			receive_pos = 0;
+			receive_done = 1;
+		}else{
+			receiver_start();
+		}
 
 		switch (currentState)
 				{
@@ -353,7 +358,7 @@ void TIM4_IRQHandler(void){
 
 	inputBuffer[receive_pos++] = valueIn;
 
-	if(receive_pos == 16){
+	if(receive_pos == 17){
 		receive_pos = 0;
 		receive_done = 1;
 	}else{
