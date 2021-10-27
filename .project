@@ -27,4 +27,11 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>Src/receiver.c</name>
+			<type>1</type>
+			<location>C:/Users/bretzj/Desktop/CE4951Networking/Src/receiver.c</location>
+		</link>
+	</linkedResources>
 </projectDescription>

@@ -241,7 +241,7 @@ void EXTI15_10_IRQHandler(void){
 		//Handle receipt of first edge of received signal
 		if(receive_pos == 0){
 			valueIn = (*GPIOA_IDR & 0x8000) >> 15;
-			inputBuffer[receive_pos++] = ~valueIn;
+			inputBuffer[receive_pos++] = !valueIn;
 			inputBuffer[receive_pos++] = valueIn;
 		}else{
 			valueIn = (*GPIOA_IDR & 0x8000) >> 15;
