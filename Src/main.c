@@ -15,6 +15,7 @@
 #include "collision.h"
 #include "transmit.h"
 #include "receiver.h"
+#include "packet.h"
 #include <inttypes.h>
 #include <stdio.h>
 
