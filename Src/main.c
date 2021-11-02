@@ -34,9 +34,19 @@ static uint32_t valueIn = 1;
 
 //Receiver Variables
 static uint32_t receive_pos = 0;
-static uint8_t inputBuffer[17];
+static uint8_t input_buffer[17];
 static uint8_t receive_done = 0;
-static char sendToConsole;
+static char decoded_value;
+
+//Receive header vars
+static char received_header[6];
+static char received_values[255];
+static char received_crc8FCS;
+static uint8_t receive_count = 0;
+static uint8_t receive_headerDone = 0;
+static uint8_t message_destination = 0;
+static uint8_t message_length = 0;
+static uint8_t message_crcFlag = 0;
 
 //Transmission Variables
 static char* data_ptr = (char*) 0; // the data being sent
@@ -150,8 +160,31 @@ int main(void)
 
 		if(receive_done == 1){
 			receive_done = 0;
-			sendToConsole = (char)receiver_decodeMan(inputBuffer);
-			printf("%c", sendToConsole);
+			decoded_value = receiver_decodeMan(input_buffer);
+
+			//Receive message
+			if((receive_headerDone == 0) && (receive_count < 5)){
+				//If header has not been fully received, receive it
+				received_header[receive_count++] = decoded_value;
+			} else if((receive_headerDone == 0) && (receive_count == 5)){
+				//Once header has been received, set values and start receiving values
+				message_destination = received_header[3];
+				message_length = received_header[4];
+				message_crcFlag = receive_headerDone[5];
+				receive_headerDone = 1;
+				receive_count = 0;
+			} else if((receive_headerDone == 1) && (receive_count < message_length)){
+				//If values have not finished receiving, receive them
+				received_values[receive_count++] = decoded_value;
+			} else if((receive_headerDone == 1) && (receive_count >= message_length)){
+				//Onece values are done, receive CRC FCS, check it, and print
+				received_crc8FCS = decoded_value;
+				//TODO Check FCS
+				printf(received_values);
+				receive_headerDone = 0;
+				receive_count = 0;
+			}
+
 		}
 
 		switch (currentState)
@@ -242,11 +275,11 @@ void EXTI15_10_IRQHandler(void){
 		//Handle receipt of first edge of received signal
 		if(receive_pos == 0){
 			valueIn = (*GPIOA_IDR & 0x8000) >> 15;
-			inputBuffer[receive_pos++] = !valueIn;
-			inputBuffer[receive_pos++] = valueIn;
+			input_buffer[receive_pos++] = !valueIn;
+			input_buffer[receive_pos++] = valueIn;
 		}else{
 			valueIn = (*GPIOA_IDR & 0x8000) >> 15;
-			inputBuffer[receive_pos++] = valueIn;
+			input_buffer[receive_pos++] = valueIn;
 		}
 
 		if(receive_pos == 17){
@@ -357,7 +390,7 @@ void TIM4_IRQHandler(void){
 
 	valueIn = (*GPIOA_IDR & 0x8000) >> 15;
 
-	inputBuffer[receive_pos++] = valueIn;
+	input_buffer[receive_pos++] = valueIn;
 
 	if(receive_pos == 17){
 		receive_pos = 0;

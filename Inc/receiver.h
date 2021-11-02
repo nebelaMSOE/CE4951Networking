@@ -41,6 +41,6 @@ void receiver_resetValue();
 //reset receiver flag
 void receiver_resetFlag();
 
-uint8_t receiver_decodeMan(uint8_t inputBuffer[]);
+char receiver_decodeMan(uint8_t inputBuffer[]);
 
 #endif /* RECEIVER_H_ */
