@@ -10,6 +10,18 @@
 
 #include <inttypes.h>
 
+typedef struct
+{
+	uint8_t preamble;
+	uint8_t version;
+	uint8_t source;
+	uint8_t destination;
+	uint8_t length; //value 1 to 255
+	uint8_t crcFlag;
+	char *data; //between size 1 and 255
+	uint8_t crc8FCS;
+} PACKET;
+
 static const uint8_t CRC_TABLE[256] = {
     0x00, 0x07, 0x0E, 0x09, 0x1C, 0x1B, 0x12, 0x15,
     0x38, 0x3F, 0x36, 0x31, 0x24, 0x23, 0x2A, 0x2D,
@@ -76,7 +88,5 @@ char* getData();
 void setCRC8FCS();
 
 uint8_t getCRC8FCS();
-
-
 
 #endif /* PACKET_H_ */

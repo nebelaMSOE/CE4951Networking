@@ -9,20 +9,8 @@
 #include <stdio.h>
 #include "packet.h"
 
-typedef struct
-{
-	uint8_t preamble;
-	uint8_t version;
-	uint8_t source;
-	uint8_t destination;
-	uint8_t length; //value 1 to 255
-	uint8_t crcFlag;
-	char *data; //between size 1 and 255
-	uint8_t crc8FCS;
-} PACKET;
-
-static volatile PACKET packetStructure;
-static volatile PACKET* packet = &packetStructure;
+volatile PACKET packetStructure;
+volatile PACKET* packet = &packetStructure;
 
 
 void setPreamble(uint8_t preamble){
@@ -70,6 +58,9 @@ uint8_t getLength(){
 
 void setCRCFlag(uint8_t crcFlag){
 	packet->crcFlag = crcFlag;
+	if (crcFlag == 0){
+		packet->crc8FCS = 0xAA;
+	}
 }
 
 uint8_t getCRCFlag(){

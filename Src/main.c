@@ -29,6 +29,8 @@ enum State {IDLE, BUSY, COLLISION};
 
 enum State currentState = IDLE;
 
+extern volatile PACKET* packet;
+
 //value to keep track of voltage on A15
 
 static uint32_t valueIn = 1;
@@ -144,7 +146,7 @@ int main(void)
 	//transmit_string(&test[0], 2);
 
 	char transmitArray[ARSIZE];
-	data_ptr = transmitArray;
+	//data_ptr = transmitArray;
 
 	while(1){
 		//look if there is anything new in uart
@@ -158,6 +160,14 @@ int main(void)
 				transmit_len = nextChar-1;
 				transmit_pos = 0;
 				nextChar = 0;
+				setPreamble(0x55);
+				setVersion(0x01);
+				setSource(0x01);
+				setDestination(0x00);
+				setLength(transmit_len);
+				setCRCFlag(0x00);
+				setData(transmitArray);
+				data_ptr = (char*)packet;
 				transmit_string(&transmitArray[transmit_pos], transmit_len);
 			} else if (retransmitterFlag == 1){
 				transmit_string(&transmitArray[transmit_pos], transmit_len);
