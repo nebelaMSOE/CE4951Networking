@@ -102,6 +102,8 @@ void TIM3_IRQHandler(void) __attribute__ ((isr));
  */
 void TIM4_IRQHandler(void) __attribute__ ((isr));
 
+uint8_t check_crc();
+
 /*
  * E1: Any signal bus voltage edge
  * E2: Timer timeout when bus is logic-0
@@ -176,10 +178,12 @@ int main(void)
 				//If values have not finished receiving, receive them
 				received_values[receive_count++] = decoded_value;
 			} else if((receive_headerDone == 1) && (receive_count >= message_length)){
-				//Onece values are done, receive CRC FCS, check it, and print
+				//Once values are done, receive CRC FCS, check it, and print
 				received_crc8FCS = decoded_value;
-				//TODO Check FCS, if Flag set
-				printf(received_values);
+				//Check CRC, if flag set
+				if(message_crcFlag == 0 || (message_crcFlag == 1 && check_crc() == 0)){
+					printf(received_values);
+				}
 				receive_headerDone = 0;
 				receive_count = 0;
 			}
@@ -397,4 +401,20 @@ void TIM4_IRQHandler(void){
 	}else{
 		receiver_start();
 	}
+}
+
+uint8_t check_crc(){
+	uint8_t val = 0;
+
+	uint8_t * pos = (uint8_t *) received_values;
+	uint8_t * end = pos + message_length;
+
+	while (pos < end) {
+		val = CRC_TABLE[val ^ *pos];
+		pos++;
+	}
+
+	val = CRC_TABLE[val ^ received_crc8FCS];
+
+	return val;
 }
