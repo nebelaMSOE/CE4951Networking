@@ -18,6 +18,7 @@
 #include "packet.h"
 #include <inttypes.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #define F_CPU 16000000UL
 
