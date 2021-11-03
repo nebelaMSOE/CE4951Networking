@@ -76,7 +76,7 @@ char* getData(){
 }
 
 void setCRC8FCS(){
-	uint8_t crc8FCS_offset = packet->length + 7;
+	uint8_t crc8FCS_offset = packet->length + 6;
 	if(packet->crcFlag == 1){
 		uint8_t val = 0;
 
@@ -95,6 +95,6 @@ void setCRC8FCS(){
 }
 
 uint8_t getCRC8FCS(){
-	uint8_t crc8FCS_offset = packet->length + 7;
+	uint8_t crc8FCS_offset = packet->length + 6;
 	return packet->inner[crc8FCS_offset];
 }
