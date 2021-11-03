@@ -160,14 +160,14 @@ int main(void)
 				transmit_len = nextChar-1;
 				transmit_pos = 0;
 				nextChar = 0;
-				setPreamble(0x55);
-				setVersion(0x01);
-				setSource(0x01);
-				setDestination(0x00);
-				setLength(transmit_len);
-				setCRCFlag(0x00);
-				setData(transmitArray);
-				setCRC8FCS();
+				setPreamble(0x55);       // 0
+				setVersion(0x01);        // 1
+				setSource(0x01);         // 2
+				setDestination(0x00);    // 3
+				setLength(transmit_len); // 4
+				setCRCFlag(0x00);        // 5
+				setData(transmitArray);  // 6
+				setCRC8FCS();            // 7
 				data_ptr = (char*)packet;
 				transmit_string(&transmitArray[transmit_pos], transmit_len);
 			} else if (retransmitterFlag == 1){

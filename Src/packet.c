@@ -8,6 +8,7 @@
 #include <inttypes.h>
 #include <stdio.h>
 #include "packet.h"
+#include <string.h>
 
 volatile PACKET packetStructure;
 volatile PACKET* packet = &packetStructure;
@@ -65,14 +66,17 @@ uint8_t getCRCFlag(){
 }
 
 void setData(char* data){
-	packet->data = data;
+//	packet->data = data;
+	strcpy((char* ) &packet->inner[6], data);
 }
 
 char* getData(){
-	return packet->data;
+//	return packet->data;
+	return (char*) &packet->inner[6];
 }
 
 void setCRC8FCS(){
+	uint8_t crc8FCS_offset = packet->length + 7;
 	if(packet->crcFlag == 1){
 		uint8_t val = 0;
 
@@ -84,12 +88,13 @@ void setCRC8FCS(){
 			pos++;
 		}
 
-		packet->crc8FCS = val;
+		packet->inner[crc8FCS_offset] = val;
 	} else {
-		packet->crc8FCS = 0xAA;
+		packet->inner[crc8FCS_offset] = 0xAA;
 	}
 }
 
 uint8_t getCRC8FCS(){
-	return packet->crc8FCS;
+	uint8_t crc8FCS_offset = packet->length + 7;
+	return packet->inner[crc8FCS_offset];
 }

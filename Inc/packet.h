@@ -10,16 +10,29 @@
 
 #include <inttypes.h>
 
-typedef struct
-{
-	uint8_t preamble;
-	uint8_t version;
-	uint8_t source;
-	uint8_t destination;
-	uint8_t length; //value 1 to 255
-	uint8_t crcFlag;
-	char *data; //between size 1 and 255
-	uint8_t crc8FCS;
+//typedef struct
+//{
+//	uint8_t preamble;
+//	uint8_t version;
+//	uint8_t source;
+//	uint8_t destination;
+//	uint8_t length; //value 1 to 255
+//	uint8_t crcFlag;
+//	char *data; //between size 1 and 255
+//	uint8_t crc8FCS;
+//} PACKET;
+
+typedef union {
+	struct {
+		uint8_t preamble;
+		uint8_t version;
+		uint8_t source;
+		uint8_t destination;
+		uint8_t length;
+		uint8_t crcFlag;
+		uint8_t data[255];
+	};
+	char inner[302];
 } PACKET;
 
 static const uint8_t CRC_TABLE[256] = {
