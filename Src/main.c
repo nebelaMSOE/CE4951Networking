@@ -167,6 +167,7 @@ int main(void)
 				setLength(transmit_len);
 				setCRCFlag(0x00);
 				setData(transmitArray);
+				setCRC8FCS();
 				data_ptr = (char*)packet;
 				transmit_string(&transmitArray[transmit_pos], transmit_len);
 			} else if (retransmitterFlag == 1){

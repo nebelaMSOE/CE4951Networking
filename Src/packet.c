@@ -58,9 +58,6 @@ uint8_t getLength(){
 
 void setCRCFlag(uint8_t crcFlag){
 	packet->crcFlag = crcFlag;
-	if (crcFlag == 0){
-		packet->crc8FCS = 0xAA;
-	}
 }
 
 uint8_t getCRCFlag(){
@@ -76,17 +73,21 @@ char* getData(){
 }
 
 void setCRC8FCS(){
-	uint8_t val = 0;
+	if(packet->crcFlag == 1){
+		uint8_t val = 0;
 
-	uint8_t * pos = (uint8_t *) packet->data;
-	uint8_t * end = pos + packet->length;
+		uint8_t * pos = (uint8_t *) packet->data;
+		uint8_t * end = pos + packet->length;
 
-	while (pos < end) {
-		val = CRC_TABLE[val ^ *pos];
-		pos++;
+		while (pos < end) {
+			val = CRC_TABLE[val ^ *pos];
+			pos++;
+		}
+
+		packet->crc8FCS = val;
+	} else {
+		packet->crc8FCS = 0xAA;
 	}
-
-	packet->crc8FCS = val;
 }
 
 uint8_t getCRC8FCS(){
