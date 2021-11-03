@@ -1,5 +1,6 @@
 #include "transmit.h"
 #include <inttypes.h>
+#include <stdlib.h>
 
 typedef struct
 {
