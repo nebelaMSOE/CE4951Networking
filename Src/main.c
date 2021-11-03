@@ -358,7 +358,7 @@ void TIM3_IRQHandler(void)
 	transmitter_resetFlag();
 
 	// we are done transmitting; turn stop timer
-	if (transmit_pos == transmit_len && half_bit == 0) {
+	if (transmit_pos == transmit_len+7 && half_bit == 0) {
 		transmitter_setOutHigh();
 		transmitter_stop();
 		return;
