@@ -47,4 +47,14 @@ void transmitter_setOutHigh();
 
 void transmitter_setOutLow();
 
+void retransmitter_start();
+
+void retransmitter_stop();
+
+void retransmitter_resetValue();
+
+void retransmitter_resetFlag();
+
+void retransmitter_resetValueRandom();
+
 #endif

@@ -21,6 +21,9 @@ typedef struct
 // this is TIM3
 static volatile TIM* tim = (TIM*) 0x40000400;
 
+// this is TIM5
+static volatile TIM* tim5 = (TIM*) 0x40000C00;
+
 //static char* data_ptr = (char*) 0; // the data being sent
 //static uint32_t transmit_len = 0; // the number of bytes
 //static uint32_t transmit_pos = 0; // byte offset
@@ -47,6 +50,13 @@ void init_transmitter(void)
 
 	transmitter_setOutHigh();
 
+	//tim5
+	*RCC_APB1ENR |= 1 << 3;
+	*NVIC_ISER0 |= 1 << 29;
+
+	retransmitter_resetValueRandom();
+	tim5->DIER = 1;
+
 }
 
 void transmit_string(char *data, uint32_t len)
@@ -67,6 +77,10 @@ void transmitter_start(){
 	tim->CR1 = 1;
 }
 
+void retransmitter_start(){
+	tim5->CR1 = 1;
+}
+
 /*
  * Stops the counter
  */
@@ -74,14 +88,26 @@ void transmitter_stop(){
 	tim->CR1 &= ~1;
 }
 
+void retransmitter_stop(){
+	tim5->CR1 &= ~1;
+}
+
 //resets value of counter
 void transmitter_resetValue(){
 	tim->CNT = 0;
 }
 
+void retransmitter_resetValue(){
+	tim5->CNT = 0;
+}
+
 //resets interrupt flag
 void transmitter_resetFlag(){
 	tim->SR &= ~1;
+}
+
+void retransmitter_resetFlag(){
+	tim5->SR &= ~1;
 }
 
 void transmitter_setOutHigh(){
@@ -90,4 +116,12 @@ void transmitter_setOutHigh(){
 
 void transmitter_setOutLow(){
 	*GPIOC_BSRR |= (1<<27);
+}
+
+void retransmitter_resetValueRandom(){
+	//generate random number between 0-1
+	int n = (rand() % 200)/200;
+	//set reset value as a time between 0-1 s;
+	tim5->ARR = n*16000000; // 1 s
+	tim5->CCR1 = n*16000000; // 1 s
 }

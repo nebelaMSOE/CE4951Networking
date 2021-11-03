@@ -47,6 +47,8 @@ static uint8_t receive_headerDone = 0;
 static uint8_t message_destination = 0;
 static uint8_t message_length = 0;
 static uint8_t message_crcFlag = 0;
+static uint8_t retransmitFlag = 0;
+static uint8_t wasCollisionFlag = 0;
 
 //Transmission Variables
 static char* data_ptr = (char*) 0; // the data being sent
@@ -145,7 +147,7 @@ int main(void)
 
 	while(1){
 		//look if there is anything new in uart
-		if((*(USART_SR)&(1<<RXNE)) == (1<<RXNE)){
+		if((*(USART_SR)&(1<<RXNE)) == (1<<RXNE) || (retransmitterFlag == 1)){
 
 			transmitArray[nextChar] = usart2_getch();
 			nextChar++;
@@ -155,6 +157,8 @@ int main(void)
 				transmit_len = nextChar-1;
 				transmit_pos = 0;
 				nextChar = 0;
+				transmit_string(&transmitArray[transmit_pos], transmit_len);
+			} else if (retransmitterFlag == 1){
 				transmit_string(&transmitArray[transmit_pos], transmit_len);
 			}
 		}
@@ -198,6 +202,10 @@ int main(void)
 			led_on(9);
 			led_on(8);
 			// Interrupt when E1
+			if(wasCollisionFlag == 1){
+				retransmitter_start();
+				wasCollisionFlag = 0;
+			}
 
 			break;
 
@@ -349,6 +357,7 @@ void TIM3_IRQHandler(void)
 	char bit = (byte & (0x80 >> transmit_bit));
 
 	if(currentState != COLLISION){
+		retransmitterFlag = 0;
 
 		if (half_bit == 0) {
 			// send first half_bit
@@ -383,6 +392,10 @@ void TIM3_IRQHandler(void)
 		}
 
 		sent += 1;
+	} else {
+		//if trying to send on collision set retransmit flag
+		transmit_pos = 0;
+		wasCollisionFlag = 1;
 	}
 }
 
@@ -417,4 +430,12 @@ uint8_t check_crc(){
 	val = CRC_TABLE[val ^ received_crc8FCS];
 
 	return val;
+}
+
+//retransmit interrupt
+void TIM5_IRQHandler(void){
+	retransmitter_stop();
+	retransmitter_resetValue();
+	retransmitter_resetValueRandom();
+	retransmitterFlag = 1;
 }
