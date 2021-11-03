@@ -47,7 +47,7 @@ static uint8_t receive_headerDone = 0;
 static uint8_t message_destination = 0;
 static uint8_t message_length = 0;
 static uint8_t message_crcFlag = 0;
-static uint8_t retransmitFlag = 0;
+static uint8_t retransmitterFlag = 0;
 static uint8_t wasCollisionFlag = 0;
 
 //Transmission Variables
