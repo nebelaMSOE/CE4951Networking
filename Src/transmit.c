@@ -47,7 +47,6 @@ void init_transmitter(void)
 
 	transmitter_setOutHigh();
 
-	// TODO: initialize a pin to transmit on
 }
 
 void transmit_string(char *data, uint32_t len)

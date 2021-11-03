@@ -102,7 +102,6 @@ void TIM3_IRQHandler(void) __attribute__ ((isr));
  */
 void TIM4_IRQHandler(void) __attribute__ ((isr));
 
-
 /*
  * E1: Any signal bus voltage edge
  * E2: Timer timeout when bus is logic-0
@@ -170,7 +169,7 @@ int main(void)
 				//Once header has been received, set values and start receiving values
 				message_destination = received_header[3];
 				message_length = received_header[4];
-				message_crcFlag = receive_headerDone[5];
+				message_crcFlag = received_header[5];
 				receive_headerDone = 1;
 				receive_count = 0;
 			} else if((receive_headerDone == 1) && (receive_count < message_length)){
@@ -179,7 +178,7 @@ int main(void)
 			} else if((receive_headerDone == 1) && (receive_count >= message_length)){
 				//Onece values are done, receive CRC FCS, check it, and print
 				received_crc8FCS = decoded_value;
-				//TODO Check FCS
+				//TODO Check FCS, if Flag set
 				printf(received_values);
 				receive_headerDone = 0;
 				receive_count = 0;
