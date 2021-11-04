@@ -19,6 +19,7 @@
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define F_CPU 16000000UL
 
@@ -162,10 +163,10 @@ int main(void)
 				nextChar = 0;
 				setPreamble(0x55);       // 0
 				setVersion(0x01);        // 1
-				setSource(0x01);         // 2
-				setDestination(0x00);    // 3
+				setSource(0x08);         // 2
+				setDestination(0x52);    // 3
 				setLength(transmit_len); // 4
-				setCRCFlag(0x00);        // 5
+				setCRCFlag(0x01);        // 5
 				setData(transmitArray);  // 6
 				setCRC8FCS();            // 7
 				data_ptr = (char*)packet;
@@ -200,6 +201,7 @@ int main(void)
 				if(message_crcFlag == 0 || (message_crcFlag == 1 && check_crc() == 0)){
 					printf(received_values);
 				}
+				memset(&received_values[0], 0, 255);
 				receive_headerDone = 0;
 				receive_count = 0;
 			}
