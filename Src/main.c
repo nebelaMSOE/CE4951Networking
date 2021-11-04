@@ -154,7 +154,13 @@ int main(void)
 		if((*(USART_SR)&(1<<RXNE)) == (1<<RXNE) || (retransmitterFlag == 1)){
 
 			transmitArray[nextChar] = usart2_getch();
-			nextChar++;
+			if (transmitArray[nextChar] == 0x8){
+				if(nextChar != 0){
+					nextChar--;
+				}
+			} else {
+				nextChar++;
+			}
 
 			//if return character
 			if (transmitArray[nextChar-1] == 0xa){
