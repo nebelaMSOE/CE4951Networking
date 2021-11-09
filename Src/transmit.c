@@ -123,6 +123,7 @@ void retransmitter_resetValueRandom(){
 	//generate random number between 0-1
 	int n = (rand() % 200)/200;
 	//set reset value as a time between 0-1 s;
+	printf("Random delay is: %d", n);
 	tim5->ARR = n*16000000; // 1 s
 	tim5->CCR1 = n*16000000; // 1 s
 }
