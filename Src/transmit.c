@@ -1,6 +1,7 @@
 #include "transmit.h"
 #include <inttypes.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 typedef struct
 {
@@ -24,6 +25,9 @@ static volatile TIM* tim = (TIM*) 0x40000400;
 
 // this is TIM5
 static volatile TIM* tim5 = (TIM*) 0x40000C00;
+
+// Variable for random reset
+int randomReset = 0;
 
 //static char* data_ptr = (char*) 0; // the data being sent
 //static uint32_t transmit_len = 0; // the number of bytes
@@ -121,9 +125,9 @@ void transmitter_setOutLow(){
 
 void retransmitter_resetValueRandom(){
 	//generate random number between 0-1
-	int n = (rand() % 200)/200;
+	randomReset = (rand() % 200);
+	printf("\n\rRandom restart value: %d\n\r", randomReset);
 	//set reset value as a time between 0-1 s;
-	printf("Random delay is: %d", n);
-	tim5->ARR = n*16000000; // 1 s
-	tim5->CCR1 = n*16000000; // 1 s
+	tim5->ARR = randomReset*80000; // 1 s
+	tim5->CCR1 = randomReset*80000; // 1 s
 }
