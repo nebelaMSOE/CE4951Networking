@@ -128,6 +128,6 @@ void retransmitter_resetValueRandom(){
 	randomReset = (rand() % 200);
 	printf("\n\rRandom restart value: %d\n\r", randomReset);
 	//set reset value as a time between 0-1 s;
-	tim5->ARR = randomReset*80000; // 1 s
-	tim5->CCR1 = randomReset*80000; // 1 s
+	tim5->ARR = randomReset*80000; // 1/200 s
+	tim5->CCR1 = randomReset*80000; // 1/200 s
 }
