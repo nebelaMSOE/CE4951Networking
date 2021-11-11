@@ -81,8 +81,9 @@ void detect_init(){
 	*GPIOA_MODER &= ~(0xC0000000);
 
 	//Set A15 to pull up
-	*GPIOA_PUPDR &= ~(0xC0000000);
-	*GPIOA_PUPDR |= (0x40000000);
+//	*GPIOA_PUPDR &= ~(0xC0000000);
+//	*GPIOA_PUPDR |= (0x40000000);
+//	*GPIOA_OTYPER |= 1<<15;
 
 	//Enable interrupt
 	*SYSCFG_EXTICR4 &= ~(0xF000);

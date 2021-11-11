@@ -21,6 +21,7 @@
 #define SYSCFGEN 1<<14
 
 #define GPIOA_MODER (volatile uint32_t*) 0x40020000
+#define GPIOA_OTYPER (volatile uint32_t*) 0x40020004
 #define GPIOA_PUPDR (volatile uint32_t*) 0x4002000C
 #define GPIOA_IDR (volatile uint32_t*) 0x40020010
 #define GPIOA_ODR (volatile uint32_t*) 0x40020014
