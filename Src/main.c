@@ -169,8 +169,8 @@ int main(void)
 				nextChar = 0;
 				setPreamble(0x55);       // 0
 				setVersion(0x01);        // 1
-				setSource(0x08);         // 2
-				setDestination(0x52);    // 3
+				setSource(0x0B);         // 2
+				setDestination(0x0A);    // 3
 				setLength(transmit_len); // 4
 				setCRCFlag(0x01);        // 5
 				setData(transmitArray);  // 6
@@ -205,8 +205,9 @@ int main(void)
 				received_crc8FCS = decoded_value;
 				//Check CRC, if flag set
 				if(message_crcFlag == 0 || (message_crcFlag == 1 && check_crc() == 0)){
-					if(message_destination == 0 || message_destination == 0x0A)
-					printf(received_values);
+//					if(message_destination == 0 || message_destination == 0x0B) {
+						printf(received_values);
+//					}
 				}
 				memset(&received_values[0], 0, 255);
 				receive_headerDone = 0;
