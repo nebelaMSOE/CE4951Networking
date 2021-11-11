@@ -205,6 +205,7 @@ int main(void)
 				received_crc8FCS = decoded_value;
 				//Check CRC, if flag set
 				if(message_crcFlag == 0 || (message_crcFlag == 1 && check_crc() == 0)){
+					if(message_destination == 0 || message_destination == 0x0A)
 					printf(received_values);
 				}
 				memset(&received_values[0], 0, 255);
