@@ -48,7 +48,7 @@ void init_transmitter(void)
 	//Set pin PC11 to output
 	*GPIOC_MODER &= ~(0x3<<22);
 	*GPIOC_MODER |= (0x1<<22);
-	*GPIOC_OTYPER |= 1<<11;
+	//*GPIOC_OTYPER |= 1<<11;
 
 	tim->ARR = 8000; // .5 ms
 	tim->CCR1 = 8000; // .5 ms

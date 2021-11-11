@@ -198,7 +198,7 @@ int main(void)
 				receive_headerDone = 1;
 				receive_count = 0;
 			} else if((receive_headerDone == 1) && (receive_count < message_length)){
-				//If values have not finished receiving, receive them
+				//If values have finished receiving, receive them
 				received_values[receive_count++] = decoded_value;
 			} else if((receive_headerDone == 1) && (receive_count >= message_length)){
 				//Once values are done, receive CRC FCS, check it, and print
